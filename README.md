@@ -1,1 +1,1 @@
-# Nobel winners in physics and chemistry
+# Nobel laureates in physics and chemistry
