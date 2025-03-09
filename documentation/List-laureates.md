@@ -3,6 +3,9 @@
     * https://en.wikipedia.org/wiki/Nobel_Prize
     * https://fr.wikipedia.org/wiki/Prix_Nobel
  
+* Laureate:
+    * https://en.wikipedia.org/wiki/Laureate
+ 
 * List of Nobel laureates in Physics:
     * https://en.wikipedia.org/wiki/List_of_Nobel_laureates_in_Physics
 
