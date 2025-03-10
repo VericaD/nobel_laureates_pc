@@ -3,10 +3,11 @@ This research project aims to create a model that focuses on the Nobel laureates
 
 ## Research questions
 * Is there a correlation between a laureate's socio-demographic factors and their discipline (Physics or Chemistry)?
-* How has the geographic distribution of Nobel laureates in Physics and Chemistry changed over time? Are certain contries overly represented ?
-* Do certain universities or other institutions increase the chance of becoming a Nobel laureate than others? Have they produced multiple Nobel laureate over time?
-* Do Nobel laureates follow contrasting career trajectories and are there common patterns in their professional developement
-* What are the significant publication or collaboration of the Nobel laureat that 
+* How has the geographic distribution of Nobel laureates in Physics and Chemistry changed over time? Are certain contries overrepresented?
+* Do specific universities or other institutions increase the likelihood of winning a Nobel Prize? Have these institutions produced multiple Nobel laureate in Physics and Chemistry over time?
+* Do Nobel laureates in Physics and Chemistry follow distinct career trajectories and are there common patterns in their professional developement?
+* How do socio-demographic factors or other personal aspects influence the topics of the Nobel winning research?
+* Does winning a Nobel prize inspire further significant contributions to the field?
 
 ## Aspects of the information to be collected
 * Geographical origins of the laureates
