@@ -1,4 +1,5 @@
-
+SPARQL queries made in Wikidata
+The number of Nobel Prize in Physics winners (in total 226)
 ```sparql
 SELECT (COUNT(*) AS ?eff)
 WHERE {
