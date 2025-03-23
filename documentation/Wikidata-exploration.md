@@ -1,4 +1,18 @@
 ## SPARQL queries made in Wikidata
+
+```sparql
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+
+SELECT ?laureate ?laureateLabel ?birthDate
+WHERE {
+  ?laureate wdt:P166 wd:Q38104;  
+           wdt:P569 ?birthDate.  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }  # Get labels in English
+}
+ORDER BY ?birthDate  # To order the results by birth date
+
+```
 The number of Nobel Prize in Physics winners (in total 226)
 ```sparql
 SELECT (COUNT(*) AS ?eff)
