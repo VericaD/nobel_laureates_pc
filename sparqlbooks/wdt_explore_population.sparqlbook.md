@@ -42,7 +42,7 @@ ORDER BY DESC(?eff)
 # ...
 ````
 
-SPARQL Query for Fields of Work of Nobel Prize Winners in Physics
+SPARQL Query for Fields of Work of Nobel Prize Winners
 ```sparql
 PREFIX wd: <http://www.wikidata.org/entity/>  
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>  
@@ -83,27 +83,35 @@ LIMIT 20
 
 ````
 
-Retrieves a list of Nobel Prize in Physics laureates and their birth in increasing order
+Retrieves a list of Nobel Prize laureates and their birth in increasing order
+```sparql
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+
+SELECT ?laureate ?laureateLabel ?birthDate
+WHERE {
+  ?laureate wdt:P166 ?prize;
+            wdt:P569 ?birthDate.
+  FILTER (?prize IN (wd:Q38104, wd:Q44585, wd:Q80061, wd:Q37922))  # Filtering Nobel Prize categories
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+ORDER BY ?birthDate
+
+
+```
+The number of Nobel Prize winners (in total 771)
 ```sparql
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
 
-SELECT ?laureate ?laureateLabel ?birthDate
-WHERE {
-  ?laureate wdt:P166 wd:Q38104;  
-           wdt:P569 ?birthDate.  
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }  # Get labels in English
-}
-ORDER BY ?birthDate  # To order the results by birth date
-
-```
-The number of Nobel Prize in Physics winners (in total 226)
-```sparql
 SELECT (COUNT(*) AS ?eff)
 WHERE {
   ?item wdt:P31 wd:Q5;  # Any instance of a human (Q5 is for humans).
-  wdt:P166 wd:Q38104 .  # Nobel Prize in Physics.
+        wdt:P166 ?prize.  
+  FILTER (?prize IN (wd:Q38104, wd:Q44585, wd:Q80061, wd:Q37922))  # Nobel Prizes in Physics, Chemistry, Medicine, and Literature
 }
+
 ````
 Nobel Prize Winners in Physics by Country
 ````sparql
