@@ -1,28 +1,3 @@
-SPARQL Query for Fields of Work of Nobel Prize Winners in Physics
-```sparql
-PREFIX wd: <http://www.wikidata.org/entity/>  
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>  
-PREFIX wikibase: <http://wikiba.se/ontology#>  
-
-SELECT ?field ?fieldLabel (COUNT(*) AS ?n)  
-WHERE {  
-  ?laureate wdt:P166 wd:Q38104;  # Has received Nobel Prize in Physics  
-            wdt:P101 ?field.     # Field of work  
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }  
-}  
-GROUP BY ?field ?fieldLabel  
-ORDER BY DESC(?n)  
-LIMIT 20
-
-#Top 5 field of work
-# physics - 148 occurrences
-# theoretical physics - 30 occurrences
-# astrophysics - 15 occurrences
-# particle physics - 15 occurrences
-# nuclear physics - 12 occurrences
-
-
-````
 Show and count how many properties are available for the Nobel prize winners population
 ```sparql
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -35,14 +10,16 @@ WHERE {
   {
     SELECT ?p (COUNT(*) AS ?eff)
     WHERE {
-      ?item wdt:P166 wd:Q38104;  # Nobel Prize in Physics (award received)
-            wdt:P31 wd:Q5;       # Must be a human
-            #wdt:P569 ?birthDate; # Birth date
-            ?p ?o.               # Any property associated with the person
+      { ?item wdt:P166 wd:Q38104 }  # Nobel Prize in Physics
+      UNION
+      { ?item wdt:P166 wd:Q44585 }  # Nobel Prize in Chemistry
+      UNION
+      { ?item wdt:P166 wd:Q80061 }  # Nobel Prize in Physiology or Medicine
+      UNION
+      { ?item wdt:P166 wd:Q37922 }  # Nobel Prize in Literature
 
-      # Extract the birth year
-      #BIND(REPLACE(str(?birthDate), "(.*)([0-9]{4})(.*)", "$2") AS ?year)
-      
+      ?item wdt:P31 wd:Q5; # Must be a human
+            ?p ?o.         # Any property associated with them
     }
     GROUP BY ?p 
   }
@@ -52,6 +29,7 @@ WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }  
 }  
 ORDER BY DESC(?eff)
+
 
 # award received - 2627 - occurrences
 # member of - 1315 - occurrences
@@ -63,6 +41,48 @@ ORDER BY DESC(?eff)
 # field of work - 454 - occurrences
 # ...
 ````
+
+SPARQL Query for Fields of Work of Nobel Prize Winners in Physics
+```sparql
+PREFIX wd: <http://www.wikidata.org/entity/>  
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>  
+PREFIX wikibase: <http://wikiba.se/ontology#>  
+
+SELECT ?field ?fieldLabel (COUNT(*) AS ?n)  
+WHERE {  
+  {?laureate wdt:P166 wd:Q38104;  # Nobel Prize in Physics  
+              wdt:P101 ?field.    # Field of work
+  }
+  UNION
+  {?laureate wdt:P166 wd:Q44585;  # Nobel Prize in Chemistry  
+              wdt:P101 ?field.    # Field of work
+  }
+  UNION
+  {?laureate wdt:P166 wd:Q80061;  # Nobel Prize in Physiology or Medicine  
+              wdt:P101 ?field.    # Field of work
+  }
+  UNION
+  {?laureate wdt:P166 wd:Q37922;  # Nobel Prize in Literature  
+              wdt:P101 ?field.    # Field of work
+  }
+
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }  
+}  
+GROUP BY ?field ?fieldLabel  
+ORDER BY DESC(?n)  
+LIMIT 20
+
+
+#Top 5 field of work
+# physics - 148 occurrences
+# theoretical physics - 30 occurrences
+# astrophysics - 15 occurrences
+# particle physics - 15 occurrences
+# nuclear physics - 12 occurrences
+
+
+````
+
 Retrieves a list of Nobel Prize in Physics laureates and their birth in increasing order
 ```sparql
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
