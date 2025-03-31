@@ -12,11 +12,18 @@ WHERE {
 }  
 GROUP BY ?field ?fieldLabel  
 ORDER BY DESC(?n)  
-LIMIT 20  
+LIMIT 20
+
+#Top 5 field of work
+# physics - 148 occurences
+# theoretical physics - 30 occurences
+# astrophysics - 15 occurences
+# particle physics - 15 occurences
+# nuclear physics - 12 occurences
 
 
 ````
-Count how many properties are available for the Nobel prize winners population
+Show and count how many properties are available for the Nobel prize winners population
 ```sparql
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
@@ -30,11 +37,11 @@ WHERE {
     WHERE {
       ?item wdt:P166 wd:Q38104;  # Nobel Prize in Physics (award received)
             wdt:P31 wd:Q5;       # Must be a human
-            wdt:P569 ?birthDate; # Birth date
+            #wdt:P569 ?birthDate; # Birth date
             ?p ?o.               # Any property associated with the person
 
       # Extract the birth year
-      BIND(REPLACE(str(?birthDate), "(.*)([0-9]{4})(.*)", "$2") AS ?year)
+      #BIND(REPLACE(str(?birthDate), "(.*)([0-9]{4})(.*)", "$2") AS ?year)
       
     }
     GROUP BY ?p 
@@ -45,4 +52,16 @@ WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }  
 }  
 ORDER BY DESC(?eff)
+
+# award received - 2627
+# member of - 1315
+# doctoral student - 1049
+# occupation - 783
+# employer - 711
+# educated at - 641
+# described by source - 572
+# field of work - 454
+# ...
 ````
+
+
