@@ -75,11 +75,11 @@ LIMIT 20
 
 
 #Top 5 field of work
-# physics - 148 occurrences
-# theoretical physics - 30 occurrences
-# astrophysics - 15 occurrences
-# particle physics - 15 occurrences
-# nuclear physics - 12 occurrences
+# wd:Q413	physics	               166
+# wd:Q7094	biochemistry	       112
+# wd:Q2329	chemistry	        85
+# wd:Q521	physiology	        32
+# wd:Q18362	theoretical physics	31
 
 
 ````
