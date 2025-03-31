@@ -15,11 +15,11 @@ ORDER BY DESC(?n)
 LIMIT 20
 
 #Top 5 field of work
-# physics - 148 occurences
-# theoretical physics - 30 occurences
-# astrophysics - 15 occurences
-# particle physics - 15 occurences
-# nuclear physics - 12 occurences
+# physics - 148 occurrences
+# theoretical physics - 30 occurrences
+# astrophysics - 15 occurrences
+# particle physics - 15 occurrences
+# nuclear physics - 12 occurrences
 
 
 ````
@@ -53,14 +53,14 @@ WHERE {
 }  
 ORDER BY DESC(?eff)
 
-# award received - 2627
-# member of - 1315
-# doctoral student - 1049
-# occupation - 783
-# employer - 711
-# educated at - 641
-# described by source - 572
-# field of work - 454
+# award received - 2627 - occurrences
+# member of - 1315 - occurrences
+# doctoral student - 1049 - occurrences
+# occupation - 783 - occurrences
+# employer - 711 - occurrences
+# educated at - 641 - occurrences
+# described by source - 572 - occurrences
+# field of work - 454 - occurrences
 # ...
 ````
 
