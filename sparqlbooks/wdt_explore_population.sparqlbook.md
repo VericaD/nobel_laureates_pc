@@ -16,3 +16,33 @@ LIMIT 20
 
 
 ````
+Count how many properties are available for the Nobel prize winners population
+```sparql
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?p ?propLabel ?eff
+WHERE {
+  {
+    SELECT ?p (COUNT(*) AS ?eff)
+    WHERE {
+      ?item wdt:P166 wd:Q38104;  # Nobel Prize in Physics (award received)
+            wdt:P31 wd:Q5;       # Must be a human
+            wdt:P569 ?birthDate; # Birth date
+            ?p ?o.               # Any property associated with the person
+
+      # Extract the birth year
+      BIND(REPLACE(str(?birthDate), "(.*)([0-9]{4})(.*)", "$2") AS ?year)
+      
+    }
+    GROUP BY ?p 
+  }
+
+  # Get property labels
+  ?prop wikibase:directClaim ?p .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }  
+}  
+ORDER BY DESC(?eff)
+````
