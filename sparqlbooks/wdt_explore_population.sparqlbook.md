@@ -1,3 +1,4 @@
+# Wikidata exploration
 Show and count how many properties are available for the Nobel prize winners population
 ```sparql
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
