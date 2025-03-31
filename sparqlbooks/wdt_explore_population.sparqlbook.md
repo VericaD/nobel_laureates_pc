@@ -32,14 +32,15 @@ WHERE {
 ORDER BY DESC(?eff)
 
 
-# award received - 2627 - occurrences
-# member of - 1315 - occurrences
-# doctoral student - 1049 - occurrences
-# occupation - 783 - occurrences
-# employer - 711 - occurrences
-# educated at - 641 - occurrences
-# described by source - 572 - occurrences
-# field of work - 454 - occurrences
+# wdt:P166	award received	         8568
+# wdt:P463	member of	               3814
+# wdt:P106	occupation	             3438
+# wdt:P1343	described by source	     2090
+# wdt:P69	educated at	               2001
+# wdt:P108	employer	             1874
+# wdt:P185	doctoral student	     1700
+# wdt:P101	field of work	         1409
+# wdt:P27	country of citizenship	   1098
 # ...
 ````
 
