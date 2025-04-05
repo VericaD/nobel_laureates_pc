@@ -1,5 +1,5 @@
 ## Import to Allegrograph
-
+First we check the basic properties of the population: name, sex, year of birth.
 ````sparql
 PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
