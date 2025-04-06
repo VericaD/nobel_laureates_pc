@@ -78,4 +78,5 @@ CONSTRUCT
         LIMIT 5
     
 ````
+### Import the triples into a dedicated graph
 
