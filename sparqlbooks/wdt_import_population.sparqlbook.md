@@ -267,7 +267,126 @@ GROUP BY ?gen
 Number of persons per gender in relation to a period (before 1900)
 * Female : 9
 * Male: 226
+````sparql
+### Add the label to the gender
 
+# This query will first retrieve all the genders, 
+# then fetch in Wikidata the gender's labels
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?gen ?genLabel
+WHERE {
+
+    
+
+    {SELECT DISTINCT ?gen
+    WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>    
+            {?s wdt:P21 ?gen}
+    }
+    }   
+
+    SERVICE  <https://query.wikidata.org/sparql> {
+        ## Add this clause in order to fill the variable      
+        BIND(?gen as ?gen)
+        BIND ( ?genLabel as ?genLabel)
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }  
+    }
+}
+````
+````sparql
+### Add the label to the gender
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+CONSTRUCT {
+     ?gen rdfs:label ?genLabel
+    
+} 
+WHERE {
+
+    
+
+    {SELECT DISTINCT ?gen
+    WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>    
+            {?s wdt:P21 ?gen}
+    }
+    }   
+
+    SERVICE  <https://query.wikidata.org/sparql> {
+        ## Add this clause in order to fill the variable      
+        BIND(?gen as ?gen)
+        BIND ( ?genLabel as ?genLabel)
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }  
+    }
+}
+````
+````sparql
+### Add the label to the gender: INSERT
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+WITH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md> 
+INSERT {
+     ?gen rdfs:label ?genLabel
+    
+} 
+WHERE {    
+
+    {SELECT DISTINCT ?gen
+    WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>    
+            {?s wdt:P21 ?gen}
+    }
+    }   
+
+    SERVICE  <https://query.wikidata.org/sparql> {
+        ## Add this clause in order to fill the variable      
+        BIND(?gen as ?gen)
+        BIND ( ?genLabel as ?genLabel)
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }  
+    }
+}
+````
+Not working
+````sparql
+### Verify data insertion - using only Allegrograph data
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?gen ?genLabel ?n
+WHERE
+{
+    {
+    SELECT ?gen (COUNT(*) as ?n)
+        WHERE {
+            GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>  
+                    {
+            ?s wdt:P21 ?gen.
+            }
+        }    
+        GROUP BY ?gen        
+    }    
+    ?gen rdfs:label ?genLabel
+    }   
+
+````
 
 
 
