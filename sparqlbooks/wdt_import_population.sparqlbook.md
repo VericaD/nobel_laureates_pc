@@ -139,4 +139,26 @@ INSERT DATA {
 }
 
 ````
+### Add the gender class
+````sparql
+###  Inspect the genders:
+# number of different countries
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) as ?n)
+WHERE
+   {
+   SELECT DISTINCT ?gender
+   WHERE {
+      GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+         {
+            ?s wdt:P21 ?gender.
+         }
+      }
+   }
+````
 
