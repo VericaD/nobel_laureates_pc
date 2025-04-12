@@ -115,22 +115,5 @@ WHERE {
 }
 
 ````
-Nobel Prize Winners in Physics by Country
-````sparql
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-PREFIX wikibase: <http://wikiba.se/ontology#>
-PREFIX bd: <http://www.bigdata.com/rdf#>
-
-SELECT ?country ?countryLabel (COUNT(DISTINCT ?winner) AS ?numWinners)
-WHERE {
-  ?winner wdt:P166 wd:Q38104;  # Nobel Prize in Physics
-          wdt:P27 ?country.    # Country of citizenship
-
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }  # Get country names in English
-}
-GROUP BY ?country ?countryLabel
-ORDER BY DESC(?numWinners)  # Sort by highest number of winners
-````
 
 
