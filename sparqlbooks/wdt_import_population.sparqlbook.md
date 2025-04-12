@@ -161,4 +161,113 @@ WHERE
       }
    }
 ````
+````sparql
+### Insert the class 'gender' for all types of gender
+# Please note that strictly speaking Wikidata has no ontology,
+# therefore no classes. We add this for our convenience
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+   ?gender rdf:type wd:Q48264.
+}
+WHERE
+   {
+   SELECT DISTINCT ?gender
+   WHERE {
+         {
+            ?s wdt:P21 ?gender.
+         }
+      }
+   }
+
+````
+````sparql
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT DATA {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {
+        wd:Q48264 rdfs:label "Gender Identity".
+    }
+}
+````
+### Verify imported triples and add labels to genders
+````sparql
+### Number of triples in the graph
+SELECT (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s ?p ?o}
+}
+````
+````sparql
+### Number of persons with more than one label : no person
+SELECT (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s rdf:label ?o}
+}
+GROUP BY ?s
+HAVING (?n > 1)
+````
+### Explore the gender
+
+````sparql
+### Number of persons having more than one gender
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?s (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s wdt:P21 ?gen}
+}
+GROUP BY ?s
+HAVING (?n > 1)
+````
+````sparql
+### Number of persons per gender
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?gen (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s wdt:P21 ?gen}
+}
+GROUP BY ?gen
+#HAVING (?n > 1)
+````
+Number of persons per gender
+* Female : 43
+* Male: 727
+````sparql
+### Number of persons per gender in relation to a period
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?gen (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s wdt:P21 ?gen;
+            wdt:P569 ?birthDate.
+        FILTER (?birthDate < '1900')     
+          }
+}
+GROUP BY ?gen
+#HAVING (?n > 1)
+````
+Number of persons per gender in relation to a period (before 1900)
+* Female : 9
+* Male: 226
+
+
+
 
