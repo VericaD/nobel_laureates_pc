@@ -123,8 +123,20 @@ INSERT {
         SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }   
         }
         }
-        
-    
+````
+### Add a label to the class "Person"
+````sparql
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT DATA {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {
+        wd:Q5 rdfs:label "Person".
+    }
+}
 
 ````
 
