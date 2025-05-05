@@ -576,10 +576,127 @@ GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-im
 ````
 ### Inspect the persons in relations to continents
 ````sparql
+###  Inspect the persons in continents
+# number of persons having this citizenship
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+SELECT ?continent ?continentLabel (COUNT(*) as ?n)
+WHERE {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+{
+   ?s wdt:P27 ?country.
+   ?country wdt:P30 ?continent.
+   ?continent rdfs:label ?continentLabel.
+}
+
+}
+GROUP BY ?continent ?continentLabel
+ORDER BY DESC(?n)
+
+# "Europe": 606
+# "North America": 376
+# "Asia": 89
 ````
 ````sparql
+### Persons with more than one citizenship
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+SELECT ?item (COUNT(*) as ?n) ( GROUP_CONCAT(?continentLabel; separator=", ") AS ?continents )
+    ( GROUP_CONCAT(?countryLabel; separator=", ") AS ?countries )
+WHERE {
+    SELECT DISTINCT ?item ?continentLabel ?countryLabel
+    WHERE 
+        {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+            {
+            ?item wdt:P27 ?country.
+            ?country wdt:P30 ?continent;
+                rdfs:label ?countryLabel.
+            ?continent rdfs:label ?continentLabel.
+            ## Excluding Eurasia, Australia and Oceania insular
+            FILTER ( ?continent NOT IN (wd:Q538, wd:Q3960, wd:Q5401))
+            }
+        }
+}
+GROUP BY ?item
+#HAVING (?n > 1)
+ORDER BY DESC(?n)
+#OFFSET 10
+LIMIT 10
 ````
 ````sparql
+### Persons with more than one citizenship
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+SELECT ?item (COUNT(*) as ?n) 
+            ( GROUP_CONCAT(?continentLabel; separator=", ") AS ?continents )
+#            ( GROUP_CONCAT(?countryLabel; separator=", ") AS ?countries )
+WHERE {
+    SELECT DISTINCT ?item 
+    ?continentLabel 
+    # ?countryLabel
+    WHERE 
+        {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+            {
+            ?item wdt:P27 ?country.
+            ?country wdt:P30 ?continent;
+                rdfs:label ?countryLabel.
+            ?continent rdfs:label ?continentLabel.
+            ## Excluding Eurasia, Australia and Oceania insular
+            FILTER ( ?continent NOT IN (wd:Q538, wd:Q3960, wd:Q5401))
+            }
+        }
+}
+GROUP BY ?item
+HAVING (?n > 1)
+ORDER BY DESC(?n)
+#OFFSET 10
+LIMIT 10
 ````
 ````sparql
+### Number of persons with more than one citizenship
+# We see that we have an issue: 1/5 of population with more than one citizenship
+# How to treat this ?
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) AS ?no)
+WHERE {
+    SELECT ?item (COUNT(*) as ?n) ( GROUP_CONCAT(?continentLabel; separator=", ") AS ?continents )
+    WHERE {
+        SELECT DISTINCT ?item ?continentLabel
+        WHERE 
+            {
+            GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+                {
+                ?item wdt:P27 ?country.
+                ?country wdt:P30 ?continent.
+                ?continent rdfs:label ?continentLabel.
+                ## Excluding Eurasia, Australia and Oceania insular
+                FILTER ( ?continent NOT IN (wd:Q538, wd:Q3960, wd:Q5401))
+                }
+            }
+    }
+    GROUP BY ?item
+    HAVING (?n > 1)
+}
+
+# 144
 ````
