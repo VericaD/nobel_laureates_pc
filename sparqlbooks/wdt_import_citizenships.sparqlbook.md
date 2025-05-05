@@ -172,6 +172,122 @@ LIMIT 10
 
 # There is no such person
 ````
+Query modification
+````sparql
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT ?citizenship (COUNT(*) as ?n) WHERE {
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md> {
+    ?item wdt:P27 ?citizenship .
+  }
+}
+GROUP BY ?citizenship
+ORDER BY DESC(?n)
+LIMIT 5
+````
+### Inspect the available information
+````sparql
+### Basic query about persons' properties
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?p ?label (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5;
+            ?p ?o.
+        OPTIONAL {?p rdfs:label ?label}    
+          }
+}
+GROUP BY ?p ?label
+ORDER BY DESC(?n)
+
+````
+### Enrich the information available in your graph about countries
+````sparql
+### Get the labels of the countries 
+# Prepare the insert
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+CONSTRUCT  {
+    ?country rdfs:label ?countryLabel.
+}
+#SELECT DISTINCT ?country ?countryLabel
+WHERE {
+
+    {
+    SELECT DISTINCT ?country
+    WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+            {
+                ?s wdt:P27 ?country.
+            }
+            }
+    LIMIT 5
+    }
+
+    SERVICE <https://query.wikidata.org/sparql>
+                {
+                BIND (?country as ?country)
+                BIND (?countryLabel as ?countryLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+                }
+
+
+
+}
+````
+````sparql
+### Execute the INSERT, from the sparqlbook or on Allegrograph
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md> 
+INSERT  {
+    ?citizenship rdfs:label ?citizenshipLabel.
+}
+WHERE {
+
+    {
+    SELECT DISTINCT ?citizenship
+    WHERE {
+            {
+                ?s wdt:P27 ?citizenship.
+            }
+          }
+    }
+
+    SERVICE <https://query.wikidata.org/sparql>
+                {
+                BIND (?citizenship as ?citizenship)
+                BIND (?citizenshipLabel as ?citizenshipLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+                }
+
+
+
+}
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
 ````sparql
 ````
 ````sparql
