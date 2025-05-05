@@ -387,6 +387,113 @@ WHERE
     }   
 
 ````
+### Prepare data to analyse
+````sparql
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
+
+SELECT ?s ?label ?birthDate ?genLabel
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {
+            ## A property path passes through 
+            # two or more properties
+            ?s wdt:P21 / rdfs:label ?genLabel;
+            rdfs:label ?label;
+            wdt:P569 ?birthDate.
+          }
+}
+ORDER BY ?birthDate
+LIMIT 10
+````
+````sparql
+### Number of persons
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {
+          # ?s wdt:P31 wd:Q5 
+          ?s a wd:Q5
+          }
+}
+````
+````sparql
+### People with random choice of modalities for double variables
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+
+SELECT  ?s (MAX(?label) as ?label) (xsd:integer(MAX(?birthDate)) as ?birthDate) 
+    (MAX(?gen) as ?gen) (MAX(?genLabel) AS ?genLabel)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s wdt:P21 ?gen;
+            rdfs:label ?label;
+            wdt:P569 ?birthDate.
+        ?gen rdfs:label ?genLabel    
+          }
+}
+GROUP BY ?s
+LIMIT 10
+
+````
+````sparql
+### Number of people with basic properties without duplicates (random selection by MAX)
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (COUNT(*) as ?n)
+WHERE {
+SELECT  ?s (MAX(?label) as ?label) (xsd:integer(MAX(?birthDate)) as ?birthDate) 
+            (MAX(?gen) as ?gen) (MAX(?genLabel) AS ?genLabel)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s wdt:P21 ?gen;
+            rdfs:label ?label;
+            wdt:P569 ?birthDate.
+          }
+}
+GROUP BY ?s
+}
+````
+````sparql
+### Add label for property "date of birth
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+INSERT DATA {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+{    wdt:P569 rdfs:label "date of birth"
+}    
+}
+
+
+````
+````sparql
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+INSERT DATA {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+{    wdt:P21 rdfs:label "sex or gender"
+}    
+}
+
+
+````
 
 
