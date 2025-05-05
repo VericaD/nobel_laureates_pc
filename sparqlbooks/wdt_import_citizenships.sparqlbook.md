@@ -283,6 +283,32 @@ WHERE {
 }
 ````
 ````sparql
+###  Inspect the citizenships
+# number of persons having this citizenship
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+SELECT ?citizenship ?citizenshipLabel (COUNT(*) as ?n)
+WHERE {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+{
+   ?s wdt:P27 ?citizenship.
+   ?citizenship rdfs:label ?citizenshipLabel.
+}
+
+}
+GROUP BY ?citizenship ?citizenshipLabel
+ORDER BY DESC(?n)
+limit 20
+
+# Q30 "Unated States" 333
+# Q145 "Unated Kingdom" 108
+# Q183 "Germany" 72
+#...
 ````
 ````sparql
 ````
