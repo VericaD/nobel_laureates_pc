@@ -310,10 +310,271 @@ limit 20
 # Q183 "Germany" 72
 #...
 ````
+### Add the country class
 ````sparql
+###  Inspect the countries:
+# number of different countries
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) as ?n)
+WHERE
+   {
+   SELECT DISTINCT ?country
+   WHERE {
+      GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+         {
+            ?s wdt:P27 ?country.
+         }
+      }
+   }
+
+# 100 different contries
 ````
 ````sparql
+### Insert the class 'country' for all countries
+# Please note that strictly speaking Wikidata has no ontology,
+# therefore no classes. We add this for our convenience
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+   ?country rdf:type wd:Q6256.
+}
+WHERE
+   {
+   SELECT DISTINCT ?country
+   WHERE {
+         {
+            ?s wdt:P27 ?country.
+         }
+      }
+   }
 ````
+````sparql
+### Add label for Country concept
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT DATA {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {    wd:Q6256 rdfs:label "Country".
+    }    
+}
+
+
+````
+### Persons with more thant one citizenship
+````sparql
+### Persons with more than one citizenship
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+SELECT ?item (COUNT(*) as ?n) ( GROUP_CONCAT(?citizenshipLabel; separator=", ") AS ?countries )
+WHERE {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+{
+   ?item wdt:P27 ?citizenship.
+    ?citizenship rdfs:label ?citizenshipLabel.
+}
+
+}
+GROUP BY ?item
+HAVING (?n > 1)
+ORDER BY DESC(?n)
+OFFSET 10
+LIMIT 5
+````
+````sparql
+### Number of persons with more than one citizenship
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) AS ?no)
+WHERE {
+    SELECT ?item (COUNT(*) as ?n)
+    WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {
+    ?item wdt:P27 ?citizenship.
+        ?citizenship rdfs:label ?citizenshipLabel.
+    }
+
+    }
+    GROUP BY ?item
+    HAVING (?n > 1)
+}
+
+# 237 person with more than one citizenship or 30% of the population 
+````
+Add the continents
+````sparql
+### Get the continents — prepare the data
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+CONSTRUCT  {
+    ?citizenship wdt:P30 ?continent.
+    ?continent rdfs:label ?continentLabel.
+}
+#SELECT DISTINCT ?citizenship ?citizenshipLabel
+WHERE {
+
+    {
+    SELECT DISTINCT ?citizenship
+    WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+            {
+                ?s wdt:P27 ?citizenship.
+            }
+            }
+    LIMIT 5
+    }
+
+    SERVICE <https://query.wikidata.org/sparql>
+                {
+
+                ?citizenship wdt:P30 ?continent.
+                # BIND (?continent as ?citizenship)
+                BIND (?continentLabel as ?continentLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+                }
+
+
+
+}
+
+````
+````sparql
+### Get the labels of the countries or citizenships
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH  <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>   
+INSERT  {
+    ?citizenship wdt:P30 ?continent.
+    ?continent rdfs:label ?continentLabel.
+}
+#SELECT DISTINCT ?citizenship ?citizenshipLabel
+WHERE {
+
+    {
+    SELECT DISTINCT ?citizenship
+    WHERE {
+            {
+                ?s wdt:P27 ?citizenship.
+            }
+            }
+    }
+
+    SERVICE <https://query.wikidata.org/sparql>
+                {
+
+                ?citizenship wdt:P30 ?continent.
+                # BIND (?continent as ?citizenship)
+                BIND (?continentLabel as ?continentLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+                }
+
+
+
+}
+
+````
+````sparql
+### Insert the property label
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+INSERT DATA {
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+  {wdt:P30 rdfs:label 'continent'.}
+}
+````
+### Add the continent class
+````sparql
+###  Inspect the continents:
+# number of different continents
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) as ?n)
+WHERE
+   {
+   SELECT DISTINCT ?continent
+   WHERE {
+      GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+         {
+            ?s wdt:P30 ?continent.
+         }
+      }
+   }
+````
+````sparql
+### Insert the class 'continent' for all continents
+# Please note that strictly speaking Wikidata has no ontology,
+# therefore no classes. We add this for our convenience
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+   ?continent rdf:type wd:Q5107.
+}
+WHERE
+   {
+   SELECT DISTINCT ?continent
+   WHERE {
+         {
+            ?s wdt:P30 ?continent.
+         }
+      }
+   }
+````
+````sparql
+### Add label for "Continent" class
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT DATA {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {    wd:Q5107 rdfs:label "Continent".
+    }    
+}
+
+
+````
+### Inspect the persons in relations to continents
 ````sparql
 ````
 ````sparql
