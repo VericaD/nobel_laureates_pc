@@ -15,6 +15,9 @@ WHERE {
 In total 770
 ````sparql
 ### Some examples of persons
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
 SELECT ?s ?label ?birthYear
 WHERE {
     GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
@@ -24,6 +27,7 @@ WHERE {
 }
 ORDER BY ?s
 LIMIT 3
+
 ````
 ````sparql
 
