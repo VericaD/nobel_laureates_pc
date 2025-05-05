@@ -361,7 +361,7 @@ WHERE {
     }
 }
 ````
-Not working
+
 ````sparql
 ### Verify data insertion - using only Allegrograph data
 
