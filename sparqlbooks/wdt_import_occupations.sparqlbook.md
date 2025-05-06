@@ -269,10 +269,240 @@ WHERE
 # The number of different occupations is 261
 ````
 ````sparql
+### Insert the class 'occupation' for all the occupations
+# Please note that strictly speaking Wikidata has no ontology,
+# therefore no classes. We add this for our convenience
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+   ?occupation rdf:type wd:Q12737077.
+}
+WHERE
+   {
+   SELECT DISTINCT ?occupation
+   WHERE {
+         {
+            ?s wdt:P106 ?occupation.
+         }
+      }
+   }
 ````
 ````sparql
+### Add label for the Occupation concept
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT DATA {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {    wd:Q12737077 rdfs:label "Occupation".
+    }    
+}
+
+
+````
+### Inspect the available information
+````sparql
+### Basic query about persons' occupation
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?occupation ?occupationLabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?item wdt:P106 ?occupation.
+        OPTIONAL {?occupation rdfs:label ?occupationLabel}    
+          }
+}
+GROUP BY ?occupation ?occupationLabel 
+ORDER BY DESC(?n)
+LIMIT 10
+````
+## Get the occupations' parent occupations ('classes')
+````sparql
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT (COUNT(*) as ?n)
+WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?item a wd:Q12737077.}
+        }
+         
 ````
 ````sparql
+## 
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?occupation ?occupationLabel (COUNT(*) as ?n)
+WHERE
+    {
+        ## Find the occupations in the imported graph
+        {SELECT DISTINCT ?item
+        WHERE 
+            {?item a wd:Q12737077.}
+        ORDER BY ?item      
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # subclass of
+                ?item wdt:P279 ?occupation.
+                BIND (?occupationLabel as ?occupationLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+GROUP BY ?occupation ?occupationLabel
+ORDER BY DESC(?n)
+LIMIT 20
+
+````
+````sparql
+## Prepare import
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+CONSTRUCT {
+    ?item  wdt:P279 ?occupation.
+    ?occupation rdfs:label ?occupationLabel.
+    # rdf:type Occupation
+    ?occupation a wd:Q12737077.
+    }
+WHERE
+    {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        ## Find the persons in the imported graph
+        {SELECT ?item
+        WHERE 
+                {?item a wd:Q12737077.}
+        ORDER BY ?item      
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # subclass of
+                ?item wdt:P279 ?occupation.
+                BIND (?occupationLabel as ?occupationLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+ORDER BY DESC(?item)
+LIMIT 5
+
+````
+### Insert parent occupations
+````sparql
+### Insert the label of the property
+
+## This is needed just once
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+INSERT DATA {
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+  {wdt:P279 rdfs:label 'subclass of'.}
+}
+````
+````sparql
+### INSERT
+
+## IMPORTANT : execute the classification levels' queries below 
+# after each insert and observe what happens
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+    ?item  wdt:P279 ?occupation.
+    ?occupation rdfs:label ?occupationLabel.
+    # rdf:type Occupation
+    ?occupation a wd:Q12737077.
+    }
+WHERE
+    {
+        ## Find the persons in the imported graph
+        {SELECT ?item
+        WHERE 
+                {?item a wd:Q12737077.}
+        ORDER BY ?item      
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # subclass of
+                ?item wdt:P279 ?occupation.
+                BIND (?occupationLabel as ?occupationLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+
+
+
+````
+### Inspect imported data
+````sparql
+### Occupation Properties: outgoing
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?p ?label (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q12737077;
+            ?p ?o.
+        OPTIONAL {?p rdfs:label ?label}    
+          }
+}
+GROUP BY ?p ?label
+ORDER BY DESC(?n)
 ````
 ````sparql
 ````
