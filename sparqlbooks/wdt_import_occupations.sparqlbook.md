@@ -731,20 +731,98 @@ LIMIT 30
 ## Inspect parent occupations fields
 The aim is to find a way to distinguish between occupations
 ````sparql
+### Simplified query
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT DISTINCT 
+?occupation ?occupationLabel ?parentField ?parentFieldLabel
+?n
+          #?parentKnowledgeClassification ?parentKnowledgeClassificationLabel 
+          # (SUM(?n) as ?sn)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {
+          SELECT ?occupation ?occupationLabel
+          ?parentOccupation (COUNT(*) as ?n)
+        
+        WHERE
+        {
+          ?s a wd:Q5;  
+              wdt:P106 ?occupation.
+          ?occupation rdfs:label ?occupationLabel.
+          ?occupation  wdt:P279  ?parentOccupation.
+          }  
+        GROUP BY ?occupation ?occupationLabel
+          ?parentOccupation
+        }
+
+        SERVICE <https://query.wikidata.org/sparql>
+          {
+              # field of parent occupation / instance of /  subclass of  
+              ?parentOccupation wdt:P425 / wdt:P31 ?parentField.
+              # ?parentField wdt:P279 ?parentKnowledgeClassification.
+
+
+              #BIND (?occupation as ?occupationLabel)
+              BIND (?parentFieldLabel as ?parentFieldLabel)
+              # BIND (?parentKnowledgeClassificationLabel as ?parentKnowledgeClassificationLabel)
+              SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+          }
+
+}
+# GROUP BY ?occupation ?occupationLabel ?parentField ?parentFieldLabel
+          # ?parentKnowledgeClassification ?parentKnowledgeClassificationLabel 
+ORDER BY DESC(?n)
+LIMIT 30
 ````
 ````sparql
+### Create pairs of occupations 
+# and add the birth year of the person
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?item ?birthYear ?occupation ?occupationLabel ?occupation_1 ?occupation_1Label
+WHERE
+    {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+
+        ## Find the persons in the imported graph
+        {SELECT ?item ?birthYear
+        WHERE 
+                {?item a wd:Q5;
+                    wdt:P569 ?birthYear}
+        ORDER BY ?item      
+        OFFSET 0
+        #OFFSET 10000
+        #OFFSET 20000
+       LIMIT 5
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                ?item wdt:P106 ?occupation.
+                ?item wdt:P106 ?occupation_1.
+                FILTER (str(?occupationLabel) < str(?occupation_1Label))
+                BIND (?occupationLabel as ?occupationLabel)
+                BIND (?occupation_1Label as ?occupation_1Label)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+
+
 ````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
+
