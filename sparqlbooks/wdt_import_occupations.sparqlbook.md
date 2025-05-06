@@ -505,6 +505,238 @@ GROUP BY ?p ?label
 ORDER BY DESC(?n)
 ````
 ````sparql
+### Occupation classifications
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?birthYear ?o ?oLabel ?p ?o1 ?o1Label
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?item a wd:Q5;
+            wdt:P569 ?birthYear;
+            wdt:P106 ?o.
+        ?o a wd:Q12737077;
+            wdt:P279 ?o1.
+        OPTIONAL {?o rdfs:label ?oLabel}    
+        OPTIONAL {?o1 rdfs:label ?o1Label}    
+          }
+}
+ORDER BY ?s
+LIMIT 10
+````
+### First classification level
+````sparql
+### First classification level
+
+# filled after first insert
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentOccupation ?parentOccupationlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        # ?s wdt:P106 ?occupation.
+        # ?occupation wdt:P279 ?parentOccupation
+        ## property path:
+        ?s  wdt:P106/wdt:P279  ?parentOccupation
+
+        OPTIONAL {?parentOccupation rdfs:label ?parentOccupationlabel}    
+          }
+}
+GROUP BY ?parentOccupation ?parentOccupationlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+### Second classification level
+````sparql
+### Second classification level
+
+# no result after first insert
+# result after first insert
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentOccupation ?parentOccupationlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106/wdt:P279/wdt:P279  ?parentOccupation
+
+        OPTIONAL {?parentOccupation rdfs:label ?parentOccupationlabel}    
+          }
+}
+GROUP BY ?parentOccupation ?parentOccupationlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+### Third classification level
+````sparql
+### Third classification level
+
+# no result after first insert
+# result after first insert ! 
+
+
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentOccupation ?parentOccupationlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106/wdt:P279/wdt:P279/wdt:P279  ?parentOccupation
+
+        OPTIONAL {?parentOccupation rdfs:label ?parentOccupationlabel}    
+          }
+}
+GROUP BY ?parentOccupation ?parentOccupationlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+````sparql
+### Third classification level
+
+# explicit query path to check
+# that there are no recursions
+
+
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentOccupation ?parentOccupationlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106 ?c1.
+        ?c1 wdt:P279 ?c2.
+        ?c2 wdt:P279 ?c3.
+        ?c3 wdt:P279  ?parentOccupation
+        ## Avoid recursivity
+        FILTER ( ?c2 != ?c1)
+        FILTER ( ?c3 not in (?c1, ?c2) )
+        FILTER (  ?parentOccupation not in (?c1, ?c2, ?c3) )
+
+        OPTIONAL {?parentOccupation rdfs:label ?parentOccupationlabel}    
+          }
+}
+GROUP BY ?parentOccupation ?parentOccupationlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+### Fourth classification level
+````sparql
+### Fourth classification level
+
+# no result after first insert
+# result after first insert ! 
+
+
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentOccupation ?parentOccupationlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106 ?c1.
+        ?c1 wdt:P279 ?c2.
+        ?c2 wdt:P279 ?c3.
+        ?c3 wdt:P279 ?c4.
+        ?c4 wdt:P279  ?parentOccupation
+        FILTER ( ?c2 != ?c1)
+        FILTER ( ?c3 not in (?c1, ?c2) )
+        FILTER ( ?c4 not in (?c1, ?c2, ?c3) )
+        FILTER (  ?parentOccupation not in (?c1, ?c2, ?c3, ?c4) )
+
+        OPTIONAL {?parentOccupation rdfs:label ?parentOccupationlabel}    
+          }
+}
+GROUP BY ?parentOccupation ?parentOccupationlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+## Inspect the instance of metaclasses to occupations
+````sparql
+## 
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?occupation ?occupationLabel ?metaclass ?metaclassLabel ?n
+WHERE
+    {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        ## Find the persons in the imported graph
+        {SELECT ?occupation ?occupationLabel (COUNT(*) as ?n)
+        WHERE 
+                {?item a wd:Q5.
+                ?item wdt:P106 ?occupation.
+                ?occupation rdfs:label ?occupationLabel}
+        GROUP BY ?occupation ?occupationLabel      
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # instance of
+                ?occupation wdt:P31 ?metaclass.
+                BIND (?metaclassLabel as ?metaclassLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+ORDER BY DESC(?n)
+LIMIT 30
+
+````
+## Inspect parent occupations fields
+The aim is to find a way to distinguish between occupations
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
 ````
 ````sparql
 ````
