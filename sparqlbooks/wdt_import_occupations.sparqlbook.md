@@ -153,7 +153,7 @@ WHERE
 
 
 ````
-## Import data
+### Import data
 ````sparql
 ### Prepare the data to be imported
 # With LIMIT clause 
@@ -191,6 +191,90 @@ WHERE
             }
                 
         }
+````
+````sparql
+### This insert query has to be carried out directly on the Allegrograph server
+## Also, you have to carry it out in three steps. The accepted limit by Wikidata 
+## of instances in a variable ('item' in our case) appears to be 10000.
+## You therefore have to have three steps for a population of around 23000 persons  
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {?item wdt:P106 ?occupation.
+         ?occupation rdfs:label ?occupationLabel}
+WHERE
+    {
+        ## Find the persons in the imported graph
+        {SELECT ?item
+        WHERE 
+                {?item a wd:Q5.}
+        ORDER BY ?item      
+        #OFFSET 0
+        #OFFSET 10000
+        #OFFSET 20000
+        OFFSET 30000
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                ?item wdt:P106 ?occupation.
+                BIND (?occupationLabel as ?occupationLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+````
+````sparql
+### Insert the label of the property
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+INSERT DATA {
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+  {wdt:P106 rdfs:label 'occupation'.}
+}
+````
+### Add the Occupation class
+````sparql
+###  Inspect the occupations:
+# number of different occupations
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) as ?n)
+WHERE
+   {
+   SELECT DISTINCT ?occupation
+   WHERE {
+      GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+         {
+            ?s wdt:P106 ?occupation.
+         }
+      }
+   }
+
+# The number of different occupations is 261
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
 ````
 ````sparql
 ````
