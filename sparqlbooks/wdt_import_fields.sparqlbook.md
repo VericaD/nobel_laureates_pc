@@ -270,6 +270,106 @@ INSERT DATA {
 ````
 ### Add the field class
 ````sparql
+###  Inspect the fields:
+# number of different fields 
+
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+SELECT (COUNT(*) as ?n)
+WHERE
+   {
+   SELECT DISTINCT ?field
+   WHERE {
+      GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+         {
+            ?s wdt:P101 ?field.
+         }
+      }
+   }
+
+# number of different fields : 381
+````
+````sparql
+### Insert the class 'field of work' for all the fields
+# Please note that strictly speaking Wikidata has no ontology,
+# therefore no classes. We add this for our convenience
+# Also, Wikidata 'fields' are not explicitly associated 
+# with the Q627436 'Field of work' concept. We retain this concept
+# as more global than the parly overlapping Q1047113 'field of study'
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+   ?field rdf:type wd:Q627436.
+}
+WHERE
+   {
+   SELECT DISTINCT ?field
+   WHERE {
+         {
+            ?s wdt:P101 ?field.
+         }
+      }
+   }
+````
+````sparql
+### Add label for concept field
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+INSERT DATA {
+GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+    {    wd:Q627436 rdfs:label "Field of Work".
+    }    
+}
+
+
+````
+### Inspect the available information
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
+````
+````sparql
 ````
 ````sparql
 ````
