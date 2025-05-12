@@ -588,41 +588,355 @@ LIMIT 20
 ````
 ### Second classification level
 ````sparql
+### Second classification level
+
+# no result after first insert
+# result after first insert
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentfield ?parentfieldlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106/wdt:P279/wdt:P279  ?parentfield
+
+        OPTIONAL {?parentfield rdfs:label ?parentfieldlabel}    
+          }
+}
+GROUP BY ?parentfield ?parentfieldlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+Third classification level
+````sparql
+### Third classification level
+
+# no result after first insert
+# result after first insert ! 
+
+
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentfield ?parentfieldlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106/wdt:P279/wdt:P279/wdt:P279  ?parentfield
+
+        OPTIONAL {?parentfield rdfs:label ?parentfieldlabel}    
+          }
+}
+GROUP BY ?parentfield ?parentfieldlabel 
+ORDER BY DESC(?n)
+LIMIT 20
 ````
 ````sparql
+### Third classification level
+
+# explicit query path to check
+# that there are no recursions
+
+
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentfield ?parentfieldlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106 ?c1.
+        ?c1 wdt:P279 ?c2.
+        ?c2 wdt:P279 ?c3.
+        ?c3 wdt:P279  ?parentfield
+        ## Avoid recursivity
+        FILTER ( ?c2 != ?c1)
+        FILTER ( ?c3 not in (?c1, ?c2) )
+        FILTER (  ?parentfield not in (?c1, ?c2, ?c3) )
+
+        OPTIONAL {?parentfield rdfs:label ?parentfieldlabel}    
+          }
+}
+GROUP BY ?parentfield ?parentfieldlabel 
+ORDER BY DESC(?n)
+LIMIT 20
 ````
+Fourth classification level
+````sparql
+### Fourth classification level
+
+# no result after first insert
+# result after first insert ! 
+
+
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentfield ?parentfieldlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        ## property path:
+        ?s  wdt:P106 ?c1.
+        ?c1 wdt:P279 ?c2.
+        ?c2 wdt:P279 ?c3.
+        ?c3 wdt:P279 ?c4.
+        ?c4 wdt:P279  ?parentfield
+        FILTER ( ?c2 != ?c1)
+        FILTER ( ?c3 not in (?c1, ?c2) )
+        FILTER ( ?c4 not in (?c1, ?c2, ?c3) )
+        FILTER (  ?parentfield not in (?c1, ?c2, ?c3, ?c4) )
+
+        OPTIONAL {?parentfield rdfs:label ?parentfieldlabel}    
+          }
+}
+GROUP BY ?parentfield ?parentfieldlabel 
+ORDER BY DESC(?n)
+LIMIT 20
+````
+### Test: get rid of the classifications and restart
+````sparql
+### First classification level
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?s ?o ?oClass
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {
+            ## retrieves all the classifications:
+            ?s wdt:P279 ?o.
+            ?o a ?oClass
+          }
+}
+LIMIT 20
+````
+I didn't do the DELET
 ````sparql
 ````
+### Inspect the instance of metaclasses to fields
 ````sparql
+## 
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?field ?fieldLabel ?metaclass ?metaclassLabel ?n
+WHERE
+    {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        ## Find the persons in the imported graph
+        {SELECT ?field ?fieldLabel (COUNT(*) as ?n)
+        WHERE 
+                {?item a wd:Q5.
+                ?item wdt:P106 ?field.
+                ?field rdfs:label ?fieldLabel}
+        GROUP BY ?field ?fieldLabel      
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # instance of
+                ?field wdt:P31 ?metaclass.
+                BIND (?metaclassLabel as ?metaclassLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+ORDER BY DESC(?n)
+LIMIT 30
+
+````
+## Inspect parent fields 
+The aim is to find a way to distinguish between fields
+````sparql
+### Find fields and parent fields of parent fields
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?field ?fieldLabel
+          ?parentfield ?parentfieldlabel 
+          ?fieldField ?fieldFieldLabel
+          ?knowledgeClassification ?knowledgeClassificationLabel
+          ?parentKnowledgeClassification ?parentKnowledgeClassificationLabel
+          (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {SELECT ?field ?fieldLabel
+          ?parentfield ?parentfieldlabel 
+          ?parentKnowledgeClassification ?parentKnowledgeClassificationLabel
+        
+        WHERE
+        {?s a wd:Q5.
+        
+        ?s  wdt:P106 ?field.
+        ?field  wdt:P279  ?parentfield.
+        ?field rdfs:label ?fieldLabel.
+        ?parentfield rdfs:label ?parentfieldlabel    
+        }
+        LIMIT 3000
+        }
+
+        SERVICE <https://query.wikidata.org/sparql>
+          {
+              # field of this field
+              ?parentfield wdt:P425 ?fieldField.
+              # instance of
+              ?fieldField wdt:P31 ?knowledgeClassification.
+              # subclass of
+              ?knowledgeClassification wdt:P279 ?parentKnowledgeClassification.
+
+
+              BIND (?fieldFieldLabel as ?fieldFieldLabel)
+              BIND (?knowledgeClassificationLabel as ?knowledgeClassificationLabel)
+              BIND (?parentKnowledgeClassificationLabel as ?parentKnowledgeClassificationLabel)
+              SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+          }
+
+}
+GROUP BY ?field ?fieldLabel
+          ?parentfield ?parentfieldlabel 
+          ?fieldField ?fieldFieldLabel
+          ?knowledgeClassification ?knowledgeClassificationLabel
+          ?parentKnowledgeClassification ?parentKnowledgeClassificationLabel
+ORDER BY DESC(?n)
+LIMIT 20
 ````
 ````sparql
+### Simplified query
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT DISTINCT 
+?field ?fieldLabel ?parentField ?parentFieldLabel
+?n
+          #?parentKnowledgeClassification ?parentKnowledgeClassificationLabel 
+          # (SUM(?n) as ?sn)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {
+          SELECT ?field ?fieldLabel
+          ?parentfield (COUNT(*) as ?n)
+        
+        WHERE
+        {
+          ?s a wd:Q5;  
+              wdt:P106 ?field.
+          ?field rdfs:label ?fieldLabel.
+          ?field  wdt:P279  ?parentfield.
+          }  
+        GROUP BY ?field ?fieldLabel
+          ?parentfield
+        }
+
+        SERVICE <https://query.wikidata.org/sparql>
+          {
+              # field of parent field / instance of /  subclass of  
+              ?parentfield wdt:P425 / wdt:P31 ?parentField.
+              # ?parentField wdt:P279 ?parentKnowledgeClassification.
+
+
+              #BIND (?field as ?fieldLabel)
+              BIND (?parentFieldLabel as ?parentFieldLabel)
+              # BIND (?parentKnowledgeClassificationLabel as ?parentKnowledgeClassificationLabel)
+              SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+          }
+
+}
+# GROUP BY ?field ?fieldLabel ?parentField ?parentFieldLabel
+          # ?parentKnowledgeClassification ?parentKnowledgeClassificationLabel 
+ORDER BY DESC(?n)
+LIMIT 30
 ````
 ````sparql
+### Create pairs of fields 
+# and add the birth year of the person
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?item ?birthYear ?field ?fieldLabel ?field_1 ?field_1Label
+WHERE
+    {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+
+        ## Find the persons in the imported graph
+        {SELECT ?item ?birthYear
+        WHERE 
+                {?item a wd:Q5;
+                    wdt:P569 ?birthYear}
+        ORDER BY ?item      
+        OFFSET 0
+        #OFFSET 10000
+        #OFFSET 20000
+       LIMIT 5
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                ?item wdt:P106 ?field.
+                ?item wdt:P106 ?field_1.
+                FILTER (str(?fieldLabel) < str(?field_1Label))
+                BIND (?fieldLabel as ?fieldLabel)
+                BIND (?field_1Label as ?field_1Label)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+
+
 ````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
-````sparql
-````
+
+
 
