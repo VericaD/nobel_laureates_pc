@@ -357,12 +357,101 @@ LIMIT 10
 ````
 # The following part is to be repeated
 ## Get the fields' parent fields ('classes')
+Given the dispersion of fields, we try to obtain parent terms of fields to see if some groupings are possible.
 ````sparql
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT (COUNT(*) as ?n)
+WHERE {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?item a wd:Q12737077.}
+        }
+         
 ````
 ````sparql
+## 
+
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT ?field ?fieldLabel (COUNT(*) as ?n)
+WHERE
+    {
+        ## Find the fields in the imported graph
+        {SELECT DISTINCT ?item
+        WHERE 
+            {?item a wd:Q12737077.}
+        ORDER BY ?item      
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # subclass of
+                ?item wdt:P279 ?field.
+                BIND (?fieldLabel as ?fieldLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+GROUP BY ?field ?fieldLabel
+ORDER BY DESC(?n)
+LIMIT 20
+
 ````
 ````sparql
+## Prepare import
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+CONSTRUCT {
+    ?item  wdt:P279 ?field.
+    ?field rdfs:label ?fieldLabel.
+    # rdf:type field
+    ?field a wd:Q12737077.
+    }
+WHERE
+    {
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        ## Find the persons in the imported graph
+        {SELECT ?item
+        WHERE 
+                {?item a wd:Q12737077.}
+        ORDER BY ?item      
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # subclass of
+                ?item wdt:P279 ?field.
+                BIND (?fieldLabel as ?fieldLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+ORDER BY DESC(?item)
+LIMIT 5
+
 ````
+### Insert parent fields
 ````sparql
 ````
 ````sparql
