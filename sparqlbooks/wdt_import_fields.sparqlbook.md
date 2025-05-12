@@ -514,9 +514,50 @@ WHERE
 ````
 ### Inspect imported data
 ````sparql
+### Propriétés des fields: outgoing
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?p ?label (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q12737077;
+            ?p ?o.
+        OPTIONAL {?p rdfs:label ?label}    
+          }
+}
+GROUP BY ?p ?label
+ORDER BY DESC(?n)
 ````
 ````sparql
+### field classifications
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?birthYear ?o ?oLabel ?p ?o1 ?o1Label
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?item a wd:Q5;
+            wdt:P569 ?birthYear;
+            wdt:P106 ?o.
+        ?o a wd:Q12737077;
+            wdt:P279 ?o1.
+        OPTIONAL {?o rdfs:label ?oLabel}    
+        OPTIONAL {?o1 rdfs:label ?o1Label}    
+          }
+}
+ORDER BY ?s
+LIMIT 10
 ````
+### First classification level
 ````sparql
 ````
 ````sparql
