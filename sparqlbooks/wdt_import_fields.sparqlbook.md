@@ -559,7 +559,34 @@ LIMIT 10
 ````
 ### First classification level
 ````sparql
+### First classification level
+
+# filled after first insert
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?parentfield ?parentfieldlabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?s a wd:Q5.
+        
+        # ?s wdt:P106 ?field.
+        # ?field wdt:P279 ?parentfield
+        ## property path:
+        ?s  wdt:P106/wdt:P279  ?parentfield
+
+        OPTIONAL {?parentfield rdfs:label ?parentfieldlabel}    
+          }
+}
+GROUP BY ?parentfield ?parentfieldlabel 
+ORDER BY DESC(?n)
+LIMIT 20
 ````
+### Second classification level
 ````sparql
 ````
 ````sparql
