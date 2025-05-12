@@ -453,9 +453,66 @@ LIMIT 5
 ````
 ### Insert parent fields
 ````sparql
+### Insert the label of the property
+
+## This is needed just once
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+
+
+INSERT DATA {
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+  {wdt:P279 rdfs:label 'subclass of'.}
+}
 ````
 ````sparql
+### INSERT
+
+## IMPORTANT : execute the classification levels' queries below 
+# after each insert and observe what happens
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+INSERT {
+    ?item  wdt:P279 ?field.
+    ?field rdfs:label ?fieldLabel.
+    # rdf:type field
+    ?field a wd:Q12737077.
+    }
+WHERE
+    {
+        ## Find the persons in the imported graph
+        {SELECT ?item
+        WHERE 
+                {?item a wd:Q12737077.}
+        ORDER BY ?item      
+        LIMIT 10000
+
+        }
+        ## 
+        SERVICE <https://query.wikidata.org/sparql>
+            {
+                # subclass of
+                ?item wdt:P279 ?field.
+                BIND (?fieldLabel as ?fieldLabel)
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } 
+            }
+                
+        }
+
+
+
 ````
+### Inspect imported data
 ````sparql
 ````
 ````sparql
