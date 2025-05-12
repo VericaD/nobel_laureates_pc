@@ -336,7 +336,27 @@ GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-im
 ````
 ### Inspect the available information
 ````sparql
+### Basic query about persons' field
+
+PREFIX franzOption_defaultDatasetBehavior: <franz:rdf>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?field ?fieldLabel (COUNT(*) as ?n)
+WHERE {
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
+        {?item wdt:P101 ?field.
+        OPTIONAL {?field rdfs:label ?fieldLabel}    
+          }
+}
+GROUP BY ?field ?fieldLabel 
+ORDER BY DESC(?n)
+LIMIT 10
 ````
+# The following part is to be repeated
+## Get the fields' parent fields ('classes')
 ````sparql
 ````
 ````sparql
