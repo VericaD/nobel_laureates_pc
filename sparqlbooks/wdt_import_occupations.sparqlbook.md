@@ -153,7 +153,7 @@ WHERE
 
 
 ````
-### Import data
+## Import data
 ````sparql
 ### Prepare the data to be imported
 # With LIMIT clause 
