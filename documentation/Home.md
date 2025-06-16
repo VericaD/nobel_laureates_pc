@@ -1,4 +1,7 @@
-# Nobel laureates in Physics and Chemistry
+# The scientific fields of the Nobel laureates 
+
+This project aims to study the evolution of doctrines and methods in physics, chemistry, medicine and literature (and related Nobel Prize-winning disciplines), examining how these scientific fields develop across different geographical and social contexts. The study will analyze the position of Nobel laureates within their disciplinary fields, as well as their relationship with broader society.
+
 ## Information system
 ### Exploration phase
 * [Problem statement and research questions](https://github.com/VericaD/nobel_laureates_pc/blob/main/documentation/Problem-statement-research-questions.md)
