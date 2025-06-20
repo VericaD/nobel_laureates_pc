@@ -9,7 +9,7 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
 SELECT (COUNT(*) as ?n)
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {?s a wd:Q5.}
 }
 
@@ -26,7 +26,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT (COUNT(*) as ?n)
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {SELECT ?item
         WHERE 
                 {?item a wd:Q5.}
@@ -64,7 +64,7 @@ CONSTRUCT {?item wdt:P19 ?birthPlace.
                         rdf:type sdh:C13}
 WHERE
     {
-        GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
 
         ## Find the persons in the imported graph
         {SELECT ?item
@@ -104,7 +104,7 @@ PREFIX bd: <http://www.bigdata.com/rdf#>
 PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 
-WITH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
 INSERT {?item wdt:P19 ?birthPlace.
             ?birthPlace rdfs:label ?birthPlaceLabel;
                         rdf:type sdh:C13.}
@@ -142,7 +142,7 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
 
 INSERT DATA {
-  GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
   {wdt:P19 rdfs:label 'place of birth'.}
 }
 ```
@@ -157,7 +157,7 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
     SELECT (COUNT(*) as ?n) 
     WHERE {
-        GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
             {
                 ?s wdt:P19 ?o.
             }
@@ -176,7 +176,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
     SELECT (COUNT(*) as ?n) 
     WHERE {
-        GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
             {
                 ?geogPlace rdf:type sdh:C13.
             }
@@ -193,7 +193,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 
 INSERT DATA {
-  GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
   {sdh:C13 rdfs:label 'Geographical Place'.}
 }
 ```
@@ -210,7 +210,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 SELECT DISTINCT ?item ?birthPlace ?birthPlaceLabel
 WHERE { 
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
     {?item wdt:P19 ?birthPlace.
             ?birthPlace rdfs:label ?birthPlaceLabel;
                         rdf:type sdh:C13.}}
@@ -234,7 +234,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 SELECT DISTINCT *
 WHERE { 
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
     {?item a wd:Q5;
      rdfs:label ?persLabel.
      MINUS {?item wdt:P19 ?birthPlace}}
@@ -259,7 +259,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 SELECT DISTINCT ?item (count(*) as ?n) (GROUP_CONCAT(DISTINCT ?birthPlaceLabel; separator=" | ") AS ?birthPlaces) 
 WHERE { 
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
     {?item a wd:Q5;
      rdfs:label ?persLabel;
      wdt:P19 ?birthPlace.
@@ -287,7 +287,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 SELECT ?place ?placeLabel ?pseudoClass ?pseudoClassLabel # (COUNT(*) as ?n)
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {SELECT ?place ?placeLabel
         WHERE 
                 {?place rdf:type sdh:C13;
@@ -328,7 +328,7 @@ CONSTRUCT {?place wdt:P31 ?placeClass.
             ?placeClass rdfs:label ?placeClassLabel}
 WHERE
     {
-        GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
 
         ## Find the persons in the imported graph
         {SELECT ?place
@@ -364,12 +364,12 @@ PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX bd: <http://www.bigdata.com/rdf#>
 PREFIX sdh: <https://sdhss.org/ontology/core/>
 
-WITH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
 INSERT {?place wdt:P31 ?placeClass.
             ?placeClass rdfs:label ?placeClassLabel}
 WHERE
     {
-        GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+        GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
 
         ## Find the persons in the imported graph
         {SELECT ?place
@@ -406,7 +406,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 SELECT ?placeClass ?placeClassLabel (COUNT(*) as ?n)
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {?place rdf:type sdh:C13;
                        wdt:P31 ?placeClass.
                 ?placeClass rdfs:label ?placeClassLabel
@@ -433,7 +433,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 SELECT ?place ?placeLabel ?coordinates
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {SELECT ?place ?placeLabel
         WHERE 
                 {?place rdf:type sdh:C13;
@@ -466,7 +466,7 @@ PREFIX sdh: <https://sdhss.org/ontology/core/>
 
 CONSTRUCT {?place wdt:P625 ?coordinates.}
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {SELECT ?place ?placeLabel
         WHERE 
                 {?place rdf:type sdh:C13;
@@ -496,7 +496,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX sdh: <https://sdhss.org/ontology/core/>
 
-WITH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+WITH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
 INSERT {?place wdt:P625 ?coordinates.}
 WHERE {
         {SELECT ?place 
@@ -527,7 +527,7 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
 
 INSERT DATA {
-  GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+  GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
   {wdt:P625 rdfs:label 'coordinate location'.}
 }
 ```
@@ -543,7 +543,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?person ?personLabel ?birthDate ?birthPlace
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {?person a wd:Q5;
             rdfs:label ?personLabel;
             wdt:P569 ?birthDate;
@@ -565,7 +565,7 @@ SELECT ?person
         (MIN(?placeLabel) AS ?geoPlaceLabel)
         (MIN(?location) AS ?minLocation)
 WHERE {
-    GRAPH <https://github.com/Sciences-historiques-numeriques/astronomers/blob/main/graphs/wikidata-imported-data.md>
+    GRAPH <https://github.com/VericaD/nobel_laureates_pc/blob/main/graph/wikidata-imported-data.md>
         {
             ?person a wd:Q5;
                 rdfs:label ?personLabel;
