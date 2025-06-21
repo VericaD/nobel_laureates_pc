@@ -19,11 +19,11 @@ A l'aide d'une [carte choroplète](https://fr.wikipedia.org/wiki/Carte_choropl%C
 De cette carte apparaît également la place important de la Russie dans ce domaine scientifique
 
 
-## Distribution dans le temps
+## Time distribution
 
-Grâce à une analyse bivariée des régions d'origine en relation avec les 'générations' (périodes de 30 ans) nous observons l'évolution dans le temps
+Thanks to a bivariate analysis of the regions of origin in relation to 'generations' (periods of 30 years) we observe the evolution over time
 
-![Distribution par génération et région](../../notebooks_jupyter/wikidata_exploration/images/birth_regions_periods_bivariate.png "Distribution par génération et région")
+![Distribution by generation and region](../../notebooks_jupyter/wikidata_exploration/images/birth_regions_periods_bivariate.png "Distribution par génération et région")
 
 * Apparaît de cette carte une forte prépondérance de l'Europe dans la première partie de la période observée.
 * La Russie est quant à elle particulièrement présente dans les générations de 1881 à 1940.
