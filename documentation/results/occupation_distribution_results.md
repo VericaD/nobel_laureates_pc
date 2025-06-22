@@ -1,4 +1,4 @@
-# Distribution of the distribution in relation to the geographical origin of the Nobel laureates 
+# Distribution of the disciplines in relation to the geographical origin of the Nobel laureates 
 Question: Is there a correlation between a laureate's socio-demographic (geographical origin) factors and their discipline?
 
 ## Distribution of the disciplines across continents
