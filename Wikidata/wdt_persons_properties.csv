@@ -1,12 +1,12 @@
 p,propLabel,eff,
 http://www.wikidata.org/prop/direct/P166,award received,8620,Important
 http://www.wikidata.org/prop/direct/P463,member of,3820,Important
-http://www.wikidata.org/prop/direct/P106,occupation,3441,
+http://www.wikidata.org/prop/direct/P106,occupation,3441,Important
 http://www.wikidata.org/prop/direct/P1343,described by source,2092,
-http://www.wikidata.org/prop/direct/P69,educated at,2001,
-http://www.wikidata.org/prop/direct/P108,employer,1878,
+http://www.wikidata.org/prop/direct/P69,educated at,2001,Important
+http://www.wikidata.org/prop/direct/P108,employer,1878,Important
 http://www.wikidata.org/prop/direct/P185,doctoral student,1703,
-http://www.wikidata.org/prop/direct/P101,field of work,1419,
+http://www.wikidata.org/prop/direct/P101,field of work,1419,Important
 http://www.wikidata.org/prop/direct/P27,country of citizenship,1099,Important
 http://www.wikidata.org/prop/direct/P735,given name,1099,
 http://www.wikidata.org/prop/direct/P1412,"languages spoken, written or signed",1002,
@@ -15,9 +15,9 @@ http://www.wikidata.org/prop/direct/P214,VIAF cluster ID,795,
 http://www.wikidata.org/prop/direct/P213,ISNI,794,
 http://www.wikidata.org/prop/direct/P734,family name,788,
 http://www.wikidata.org/prop/direct/P18,image,778,
-http://www.wikidata.org/prop/direct/P19,place of birth,778,
-http://www.wikidata.org/prop/direct/P569,date of birth,775,
-http://www.wikidata.org/prop/direct/P21,sex or gender,771,
+http://www.wikidata.org/prop/direct/P19,place of birth,778,Important
+http://www.wikidata.org/prop/direct/P569,date of birth,775,Important
+http://www.wikidata.org/prop/direct/P21,sex or gender,771,Important
 http://www.wikidata.org/prop/direct/P31,instance of,771,
 http://www.wikidata.org/prop/direct/P227,GND ID,771,
 http://www.wikidata.org/prop/direct/P8024,Nobel Laureate API ID,770,
