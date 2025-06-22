@@ -1,4 +1,4 @@
-# Final results
+# Distribution of the generations and continents in time
 
 Question: How has the geographic distribution of Nobel laureates changed over time? Are certain countries/continents overrepresented?
 
