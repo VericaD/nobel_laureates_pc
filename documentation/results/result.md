@@ -1,6 +1,6 @@
 # Final results
 
-Question: How has the geographic distribution of Nobel laureates changed over time? Are certain contries/continents overrepresented?
+Question: How has the geographic distribution of Nobel laureates changed over time? Are certain countries/continents overrepresented?
 
 ## Distribution of the continents
 ![Distribution of continets](../../notebooks_jupyter/wikidata_exploration/images/images_continents/distribution_continets.png "Distribution of the continets")
