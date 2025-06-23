@@ -9,7 +9,7 @@
 * Columbia University and the University of Freiburg both score near the top of betweenness with a lower eigenvector and bubble-size. That tells us that many laureates have passed through them in career transitions, collaborations, or joint appointments.
 * University of Cambridge, Ludwig-Maximilians-Universität München, and Humboldt-Universität zu Berlin rank at the far right. They have many laureates (large bubbles) and are also linked to other major institutions which shows that they influential and in the center of the global network.
 
-## 
+## Nobel laureate network 
 
 ![Distribution of continets](../../notebooks_jupyter/wikidata_exploration/images/images_network/communite.png "Distribution of the continets")
 
