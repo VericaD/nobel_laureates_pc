@@ -7,7 +7,13 @@
 ![Distribution of continets](../../notebooks_jupyter/wikidata_exploration/images/images_network/revenus_eigenvector_20210526.jpg "Distribution of the continets")
 
 * Columbia University and the University of Freiburg both score near the top of betweenness with a lower eigenvector and bubble-size. That tells us that many laureates have passed through them in career transitions, collaborations, or joint appointments.
-* University of Cambridge, Ludwig-Maximilians-Universität München, and Humboldt-Universität zu Berlin rank at the far right. They have many laureates (large bubbles) and are also linked to other major institutions which shows that they influential and in the center of the global network. 
+* University of Cambridge, Ludwig-Maximilians-Universität München, and Humboldt-Universität zu Berlin rank at the far right. They have many laureates (large bubbles) and are also linked to other major institutions which shows that they influential and in the center of the global network.
+
+## 
+
+![Distribution of continets](../../notebooks_jupyter/wikidata_exploration/images/images_network/communite.png "Distribution of the continets")
+
+The network was created with 13 components (is_connected: False)  where there is one outstanding component with 104 nodes with 7 communities. Each colour is one of those communities that represents a set of universities that have many more ties among themselves than out to the rest of the world. 
 
 ## Results
 
